@@ -1,0 +1,13 @@
+#!/bin/sh
+# ADR-068. Git runs this on every push. Stdin is the ref list git passes.
+root=$(git rev-parse --show-toplevel) || exit 1
+cd "$root" || exit 1
+if [ -x .venv/Scripts/python.exe ]; then
+  py=".venv/Scripts/python.exe"
+elif [ -x .venv/bin/python ]; then
+  py=".venv/bin/python"
+else
+  py="python"
+fi
+"$py" scripts/security/git_security_check.py --tracked --push-stdin
+exit $?

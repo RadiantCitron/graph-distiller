@@ -1,0 +1,49 @@
+# =============================================================================
+# graph-distiller .gitignore
+# Secrets never. Personal corpus / dumps never.
+# =============================================================================
+
+# --- Secrets / local env ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+
+# --- Virtualenvs / caches / build ---
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+dist/
+build/
+.pytest_cache/
+.coverage
+
+# --- OS / editor noise ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*~
+
+# --- Data & Outputs ---
+data/raw_memos/**
+!data/raw_memos/.gitkeep
+data/checkpoints/**
+!data/checkpoints/.gitkeep
+output/codex/**
+!output/codex/.gitkeep
+output/codex_archive/
+output/runs/
+output/errors.log
+output/rag_rebuild/
+*.log
+
+# --- Development docs / local planning ---
+docs/
+!docs/design/git-security-architecture.md
+ROADMAP/
+.cursor/
+agent-transcripts/

@@ -1,0 +1,78 @@
+# graph-distiller gitleaks config (ADR-068 + ADR-072)
+# Auto-loaded from repo root as .gitleaks.toml (or pass -c).
+# Extends upstream defaults; adds OpenRouter / DB URI / cookie rules.
+# Regex engine is RE2 — no lookahead/lookbehind.
+
+title = "graph-distiller"
+
+[extend]
+useDefault = true
+
+# --- Project-specific rules (RE2-safe) ---
+
+[[rules]]
+id = "openrouter-api-key"
+description = "OpenRouter paid API key (sk-or-v1-…)"
+regex = '''sk-or-v1-[A-Za-z0-9]{20,}'''
+keywords = ["sk-or-v1", "openrouter"]
+tags = ["key", "openrouter"]
+
+[[rules]]
+id = "postgres-uri-with-password"
+description = "PostgreSQL URI with embedded user:password (RAG_DB_URI / DB_URI)"
+regex = '''(?i)(?:postgres|postgresql):\/\/[^:\s\/]+:[^@\s\/]+@[^\s'\"]+'''
+keywords = ["postgres", "postgresql", "RAG_DB_URI", "DB_URI"]
+tags = ["database", "uri"]
+
+[[rules]]
+id = "cloudflare-cf-bm-cookie"
+description = "Cloudflare __cf_bm session cookie dumped into logs/reports"
+regex = '''__cf_bm=[A-Za-z0-9._\-]{16,}'''
+keywords = ["__cf_bm"]
+tags = ["cookie", "session"]
+
+# --- PII defense rules (ADR-079 / ROADMAP_0003 Step 020) ---
+
+[[rules]]
+id = "kr-rrn"
+description = "Korean Resident Registration Number pattern (YYMMDD-GXXXXXX)"
+regex = '''\b\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])-?[1-4]\d{6}\b'''
+tags = ["pii", "rrn"]
+
+[[rules]]
+id = "kr-mobile"
+description = "Korean mobile phone number"
+regex = '''\b01[016789][- ]?\d{3,4}[- ]?\d{4}\b'''
+keywords = ["010", "011", "016", "017", "018", "019"]
+tags = ["pii", "phone"]
+
+[[rules]]
+id = "labelled-name"
+description = "Korean name with preceding label (성명/이름/작성자)"
+regex = '''(?i)(?:성명|이름|작성자)\s*[:：]\s*[가-힣]{2,4}'''
+keywords = ["성명", "이름", "작성자"]
+tags = ["pii", "name"]
+
+# --- Allowlists (placeholders / intentional docs only) ---
+
+[[allowlists]]
+description = "Env template and beginner attachment use documented placeholders"
+paths = [
+  '''(?i)^\.env\.example$''',
+  '''(?i)^docs/design/attachments/env-beginner\.md$''',
+]
+
+[[allowlists]]
+description = "Placeholder / documentation strings (not live secrets)"
+regexes = [
+  '''sk-or-v1-\.\.\.''',
+  '''postgresql://USER:PASSWORD@HOST:PORT/DATABASE''',
+  '''postgres(ql)?://user:(pass|password|PASSWORD)@''',
+]
+
+[[allowlists]]
+description = "Local virtualenvs only (secrets elsewhere are always scanned)"
+paths = [
+  '''(?i)^\.venv/''',
+  '''(?i)^venv/''',
+]

@@ -1,0 +1,19 @@
+# Phase 4 — Verifier 판정 규칙 (agents/verifier.py, ADR-060)
+#
+# 챕터 본문이 PASS인지 FAIL인지 가르는 규칙 일부. 여기를 느슨하게 하면 근거 없는
+# 문장이 더 쉽게 통과하고, 엄격하게 하면 재시도·poison이 늘어난다. 바꾼 뒤에는
+# `python tests/audit.py audit`로 codex 챕터들의 verify_against_last_known_valid_ids
+# 체크가 기대대로 통과/실패하는지 확인할 것.
+#
+# 인용 밀도 비율(VERIFY_CITATION_PARAGRAPH_RATIO / VERIFY_CITATION_SENTENCE_RATIO)은
+# 여기가 아니라 .env에 있다 — 이 파일은 "무엇을 문장/문단으로 셀지"의 규칙만 다룬다.
+
+# 챕터 본문에 [DOC_ID: ...] 인용이 이 개수 미만이면 무조건 FAIL. 정수, 0 이상.
+min_citations = 1
+
+# 문장 경계로 볼 정규식 (한국어 "~다." 종결과 영어 문장부호 둘 다 인식).
+# 정규식이 컴파일되지 않으면 파이프라인이 LLM 호출 전에 멈춘다.
+sentence_split_pattern = '(?<=[.!?。])\s+|(?<=다\.)\s+'
+
+# true면 마크다운 코드펜스(```)가 홀수 개일 때 FAIL 처리한다.
+check_markdown_fences_balanced = true

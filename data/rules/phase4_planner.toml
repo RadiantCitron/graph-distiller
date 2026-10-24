@@ -1,0 +1,13 @@
+# Phase 4 — 챕터 제목 판정 규칙 (agents/planner.py, ADR-060)
+#
+# LLM이 챕터 제목 대신 Pydantic 스키마 덩어리를 그대로 뱉는 사고(스키마 유출)를
+# 잡아내는 규칙과, 제목 길이 상한.
+
+# 제목 문자열에 이 부분 문자열 중 하나라도 들어있으면 "스키마가 그대로 새어나온
+# 제목"으로 보고 fallback 제목으로 대체한다. 소문자로 비교한다.
+leak_markers = ["chaptertitleresult", "basemodel", "field(description"]
+
+# 제목이 이 단어 수를 넘으면 앞에서부터 잘라낸다. TITLE_SYSTEM 프롬프트의
+# "5 words" 지시와 같은 값으로 맞춰둘 것 — 프롬프트만 고치고 이 값을 안 고치면
+# 프롬프트 지시와 실제 동작이 어긋난다.
+max_title_words = 5

@@ -1,0 +1,38 @@
+pydantic>=2.7.0
+typing_extensions>=4.12.0
+python-dotenv>=1.0.1
+langchain>=0.3.0
+langchain-openai>=0.2.0
+langchain-experimental>=0.3.0
+langchain-text-splitters>=0.3.0
+langchain-community>=0.3.0
+docx2txt>=0.8
+# Optional fallback for .docx via UnstructuredWordDocumentLoader:
+# unstructured>=0.15.0
+tiktoken>=0.7.0
+openai>=1.40.0
+tenacity>=8.5.0
+tqdm>=4.66.0
+rich>=13.7.0
+
+# Phase 3 — graph hierarchy
+networkx>=3.3
+# Required by NetworkX 3.x default PageRank backend (nx.pagerank → SciPy)
+scipy>=1.11.0
+numpy>=1.26.0
+# Optional Leiden (preferred). If missing, Louvain fallback is used.
+# cdlib>=0.3.0
+# leidenalg>=0.10.0
+# python-igraph>=0.11.0
+
+# Real RAG read-only pull (ADR-033) — SELECT only against RAG_DB_URI
+psycopg[binary]>=3.1.0
+
+# Phase 4 — LangGraph orchestration
+langgraph>=0.2.0
+langchain-core>=0.3.0
+
+# Test pyramid (unit / integration; e2e is a script)
+pytest>=8.0.0
+pytest-mock>=3.14.0
+pytest-asyncio>=0.24.0
